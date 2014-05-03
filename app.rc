@@ -1,25 +1,25 @@
 fn conf_enable_merged {
-    enable_merge=yes
-    conf_enable_app merge
+	enable_merge=yes
+	conf_enable_app merge
 }
 
 fn merge_init {
-    if(! ~ $#enable_merge 0 && ~ $local_path */index) {
+	if(! ~ $#enable_merge 0 && ~ $local_path */index) {
 		handler_body_main=(merging $req_path)
 	}
 }
 
 fn merging {
 	d=`{basename -d $1}
-    if(~ $#d 0)
-        d='/'
-	    echo $d|sed 's,.*//,,g; s,/$,,; s,/,,g; s/[\-_]/ /g; s,.*,<h1 class="merge">&</h1>,'
+	if(~ $#d 0)
+		d='/'
+	echo $d|sed 's,.*//,,g; s,/$,,; s,/,,g; s/[\-_]/ /g; s,.*,<h1 class="merge">&</h1>,'
 	idx=$sitedir$d^'/index.md'
 	if(test -f $idx) {
 		cat $idx | $formatter
 	}
-    # Symlinks suck: '/.' forces ls to list the linked dir if $d is a symlink.
-    files=`{ls -F $dir_listing_ls_opts $sitedir$d/. | sed $dirfilter$dirclean | uniq}
+	# Symlinks suck: '/.' forces ls to list the linked dir if $d is a symlink.
+	files=`{ls -F $dir_listing_ls_opts $sitedir$d/. | sed $dirfilter$dirclean | uniq}
 	for(f in $files) {
 		fi=$f.md
 		if(test -f $fi) {
